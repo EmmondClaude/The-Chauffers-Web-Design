@@ -1,20 +1,14 @@
 'use client';
 
-import {
-  useState,
-  useEffect,
-  useRef,
-  useCallback,
-  forwardRef,
-  useImperativeHandle,
-  type MouseEvent as ReactMouseEvent,
-} from 'react';
-import { CONFIG, FLEET, SERVICES, type VehicleType, type Vehicle } from '@/data/fleet';
+import { useState, useEffect, useCallback, type MouseEvent as ReactMouseEvent } from 'react';
+import { CONFIG, FLEET, SERVICES } from '@/data/fleet';
 import { estimateFor, firstName, validateBooking, validateLead } from '@/lib/booking';
-import { stepFor, nearestSpinAngle, frontIndex, wrapIndex } from '@/lib/showroom';
+import { wrapIndex } from '@/lib/showroom';
+import Showroom3D from '@/components/Showroom3D';
 
 /* Content lives in @/data/fleet — the single source of truth the client edits.
-   Pure booking + showroom logic lives in @/lib and is unit-tested. */
+   Pure booking logic lives in @/lib and is unit-tested. The 3D showroom lives
+   in @/components/Showroom3D. */
 
 /* ============================== STYLES =================================== */
 const CSS = `
@@ -85,35 +79,23 @@ const CSS = `
 .nz-h1 em{font-style:italic;color:var(--gold-2);}
 .nz-lead{margin-top:18px;color:var(--silver);font-size:14px;letter-spacing:.06em;text-align:center;max-width:46ch;line-height:1.7;}
 
-.nz-stage3{position:relative;width:min(680px,94vw);height:380px;margin:14px auto 2px;perspective:1100px;}
-.nz-axis{position:absolute;left:50%;top:24%;width:2px;height:42%;transform:translateX(-50%);
-  background:linear-gradient(180deg,transparent,rgba(201,169,106,.45),transparent);pointer-events:none;}
-.nz-disc{position:absolute;left:50%;top:60%;width:540px;max-width:88%;height:150px;
-  transform:translate(-50%,-50%) rotateX(66deg);border-radius:50%;
-  background:radial-gradient(ellipse at center,rgba(201,169,106,.16),rgba(201,169,106,.04) 55%,transparent 70%);
-  border:1px solid rgba(201,169,106,.20);box-shadow:inset 0 0 70px rgba(201,169,106,.12);}
-.nz-disc::before{content:"";position:absolute;inset:-1px;border-radius:50%;
-  background:conic-gradient(from 0deg,transparent,rgba(201,169,106,.28),transparent 22%,transparent 50%,rgba(201,169,106,.24),transparent 72%);
-  animation:spin 16s linear infinite;mask:radial-gradient(circle,transparent 58%,#000 59%);-webkit-mask:radial-gradient(circle,transparent 58%,#000 59%);}
-@keyframes spin{to{transform:rotate(360deg)}}
-.nz-orbit{position:absolute;left:50%;top:50%;width:210px;will-change:transform;cursor:pointer;transition:filter .25s ease;}
-.nz-orbit svg{width:100%;height:auto;display:block;filter:drop-shadow(0 22px 22px rgba(0,0,0,.6));}
-.nz-cshadow{position:absolute;left:50%;bottom:2px;width:64%;height:16px;transform:translateX(-50%);
-  background:radial-gradient(ellipse at center,rgba(0,0,0,.55),transparent 70%);filter:blur(3px);pointer-events:none;}
-.nz-ptag{position:absolute;left:50%;top:-30px;transform:translateX(-50%);white-space:nowrap;text-align:center;z-index:9;
-  background:rgba(8,8,11,.9);border:1px solid var(--gold);border-radius:4px;padding:5px 14px;
-  font-family:var(--serif);font-size:20px;color:var(--gold-2);line-height:1.1;
-  box-shadow:0 10px 24px rgba(0,0,0,.5);animation:fadeUp .3s ease both;}
-.nz-ptag small{display:block;font-family:var(--sans);font-size:8.5px;letter-spacing:.22em;
-  color:var(--silver);text-transform:uppercase;margin-top:2px;}
+/* ---- 3D showroom stage ---- */
+.nz-stage3d{position:relative;width:min(860px,96vw);height:460px;margin:18px auto 2px;border-radius:12px;overflow:hidden;
+  border:1px solid rgba(201,169,106,.16);background:radial-gradient(120% 120% at 50% 18%,#101016,#06060a 72%);
+  box-shadow:inset 0 0 90px rgba(0,0,0,.6), 0 30px 60px rgba(0,0,0,.45);}
+.nz-stage3d canvas{display:block;width:100%!important;height:100%!important;touch-action:none;}
+.nz-stage3d-hint{position:absolute;bottom:12px;left:0;right:0;text-align:center;font-size:10px;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--silver);opacity:.65;pointer-events:none;}
+.nz-stage3d-fallback{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;}
+.nz-stage3d-name{font-family:var(--serif);font-size:clamp(24px,4vw,34px);color:var(--gold-2);}
 
-.nz-model{font-family:var(--serif);font-size:clamp(24px,4vw,34px);margin-top:6px;text-align:center;}
+.nz-model{font-family:var(--serif);font-size:clamp(24px,4vw,34px);margin-top:14px;text-align:center;}
 .nz-modelblurb{color:var(--silver);font-size:12.5px;letter-spacing:.08em;margin-top:6px;text-align:center;}
 .nz-specs{display:flex;gap:26px;justify-content:center;margin-top:12px;color:var(--cream);}
 .nz-specs span{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--silver);}
 .nz-specs b{font-family:var(--serif);font-size:18px;color:var(--gold-2);margin-right:6px;}
 
-.nz-tabs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:26px;max-width:760px;}
+.nz-tabs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:26px;max-width:820px;}
 .nz-tab{background:rgba(255,255,255,.02);border:1px solid rgba(184,188,196,.18);color:var(--silver);
   padding:10px 16px;border-radius:2px;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;
   cursor:pointer;transition:.3s;}
@@ -176,149 +158,6 @@ const CSS = `
 .nz-foot a{color:var(--gold-2);text-decoration:none;}
 `;
 
-/* ===================== LUXURY SUV (front 3/4) ============================ */
-function SUV({ accent = '#c9a96a' }: { accent?: string }) {
-  return (
-    <svg width="360" height="240" viewBox="0 0 360 240" fill="none" aria-label="Luxury SUV">
-      <defs>
-        <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#2a2a31" />
-          <stop offset="0.5" stopColor="#16161b" />
-          <stop offset="1" stopColor="#0b0b0f" />
-        </linearGradient>
-        <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#3a4750" />
-          <stop offset="1" stopColor="#10161b" />
-        </linearGradient>
-        <radialGradient id="led" cx="0.5" cy="0.5" r="0.5">
-          <stop offset="0" stopColor={accent} />
-          <stop offset="1" stopColor={accent} stopOpacity="0" />
-        </radialGradient>
-      </defs>
-      <ellipse cx="180" cy="212" rx="150" ry="16" fill={accent} opacity="0.12" />
-      <path d="M96 70 Q108 40 150 38 L210 38 Q252 40 264 70 Z" fill="url(#body)" />
-      <path d="M110 70 Q120 50 150 49 L210 49 Q240 50 250 70 Z" fill="url(#glass)" />
-      <line x1="180" y1="49" x2="180" y2="70" stroke="#0b0b0f" strokeWidth="3" />
-      <rect x="62" y="70" width="236" height="96" rx="20" fill="url(#body)" />
-      <rect x="62" y="70" width="236" height="96" rx="20" fill="none" stroke={accent} strokeOpacity="0.18" />
-      <line x1="76" y1="104" x2="284" y2="104" stroke="#000" strokeOpacity="0.5" strokeWidth="2" opacity="0.5" />
-      <line x1="80" y1="120" x2="280" y2="120" stroke={accent} strokeWidth="1" opacity="0.35" />
-      <rect x="138" y="112" width="84" height="40" rx="5" fill="#0a0a0d" stroke={accent} strokeOpacity="0.35" />
-      {[150, 162, 174, 186, 198, 210].map((x) => (
-        <line key={x} x1={x} y1="116" x2={x} y2="148" stroke={accent} strokeOpacity="0.5" strokeWidth="2" />
-      ))}
-      <circle cx="180" cy="132" r="9" fill="#0a0a0d" stroke={accent} strokeOpacity="0.8" />
-      <circle cx="180" cy="132" r="3.4" fill={accent} />
-      <rect x="80" y="112" width="46" height="9" rx="4.5" fill={accent} />
-      <rect x="234" y="112" width="46" height="9" rx="4.5" fill={accent} />
-      <ellipse cx="103" cy="116" rx="42" ry="22" fill="url(#led)" opacity="0.6" />
-      <ellipse cx="257" cy="116" rx="42" ry="22" fill="url(#led)" opacity="0.6" />
-      <rect x="70" y="156" width="220" height="22" rx="8" fill="#0c0c10" />
-      <rect x="96" y="162" width="26" height="6" rx="3" fill={accent} opacity="0.55" />
-      <rect x="238" y="162" width="26" height="6" rx="3" fill={accent} opacity="0.55" />
-      <ellipse cx="96" cy="184" rx="26" ry="22" fill="#050507" />
-      <ellipse cx="264" cy="184" rx="26" ry="22" fill="#050507" />
-      <ellipse cx="96" cy="184" rx="11" ry="9" fill="#1c1c22" stroke={accent} strokeOpacity="0.5" />
-      <ellipse cx="264" cy="184" rx="11" ry="9" fill="#1c1c22" stroke={accent} strokeOpacity="0.5" />
-    </svg>
-  );
-}
-
-/* ===================== MERCEDES SPRINTER VAN (front) ===================== */
-function VanSVG({ accent = '#c0c4cc' }: { accent?: string }) {
-  return (
-    <svg width="360" height="240" viewBox="0 0 360 240" fill="none" aria-label="Mercedes-Benz Sprinter van">
-      <defs>
-        <linearGradient id="vbody" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#33333b" />
-          <stop offset="0.5" stopColor="#1a1a20" />
-          <stop offset="1" stopColor="#0c0c11" />
-        </linearGradient>
-        <linearGradient id="vglass" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#3f4c55" />
-          <stop offset="1" stopColor="#121a20" />
-        </linearGradient>
-        <radialGradient id="vled" cx="0.5" cy="0.5" r="0.5">
-          <stop offset="0" stopColor={accent} />
-          <stop offset="1" stopColor={accent} stopOpacity="0" />
-        </radialGradient>
-      </defs>
-      <ellipse cx="180" cy="214" rx="150" ry="15" fill={accent} opacity="0.12" />
-      <rect x="88" y="40" width="184" height="158" rx="18" fill="url(#vbody)" stroke={accent} strokeOpacity="0.16" />
-      <rect x="100" y="34" width="160" height="16" rx="8" fill="#15151b" />
-      <rect x="104" y="58" width="152" height="50" rx="9" fill="url(#vglass)" />
-      <line x1="180" y1="58" x2="180" y2="108" stroke="#0b0b0f" strokeWidth="3" />
-      <rect x="120" y="120" width="120" height="34" rx="6" fill="#0a0a0d" stroke={accent} strokeOpacity="0.4" />
-      <line x1="124" y1="131" x2="236" y2="131" stroke={accent} strokeOpacity="0.45" strokeWidth="2" />
-      <line x1="124" y1="143" x2="236" y2="143" stroke={accent} strokeOpacity="0.45" strokeWidth="2" />
-      <circle cx="180" cy="137" r="13" fill="#0a0a0d" stroke={accent} strokeOpacity="0.85" strokeWidth="1.5" />
-      <g stroke={accent} strokeWidth="2.2">
-        <line x1="180" y1="137" x2="180" y2="126" />
-        <line x1="180" y1="137" x2="189.5" y2="142.5" />
-        <line x1="180" y1="137" x2="170.5" y2="142.5" />
-      </g>
-      <path d="M92 116 L120 120 L120 130 L92 130 Z" fill={accent} />
-      <path d="M268 116 L240 120 L240 130 L268 130 Z" fill={accent} />
-      <ellipse cx="104" cy="124" rx="36" ry="18" fill="url(#vled)" opacity="0.55" />
-      <ellipse cx="256" cy="124" rx="36" ry="18" fill="url(#vled)" opacity="0.55" />
-      <rect x="92" y="160" width="176" height="30" rx="8" fill="#0c0c10" />
-      <rect x="140" y="168" width="80" height="12" rx="4" fill="#08080b" stroke={accent} strokeOpacity="0.3" />
-      <ellipse cx="116" cy="192" rx="24" ry="20" fill="#050507" />
-      <ellipse cx="244" cy="192" rx="24" ry="20" fill="#050507" />
-      <ellipse cx="116" cy="192" rx="10" ry="8" fill="#1c1c22" stroke={accent} strokeOpacity="0.5" />
-      <ellipse cx="244" cy="192" rx="10" ry="8" fill="#1c1c22" stroke={accent} strokeOpacity="0.5" />
-    </svg>
-  );
-}
-
-/* ===================== PARTY BUS (front, neon) ========================== */
-function BusSVG({ accent = '#d8c08a' }: { accent?: string }) {
-  const lights = ['#e8d8a8', '#ff5fa2', '#5fd0ff', '#c08bff', '#e8d8a8', '#ff5fa2', '#5fd0ff', '#c08bff'];
-  return (
-    <svg width="360" height="240" viewBox="0 0 360 240" fill="none" aria-label="Luxury party bus">
-      <defs>
-        <linearGradient id="bbody" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#2c2c34" />
-          <stop offset="0.5" stopColor="#17171d" />
-          <stop offset="1" stopColor="#0b0b0f" />
-        </linearGradient>
-        <linearGradient id="bglass" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#2a3640" />
-          <stop offset="1" stopColor="#0d1318" />
-        </linearGradient>
-      </defs>
-      <ellipse cx="150" cy="214" rx="120" ry="13" fill="#ff5fa2" opacity="0.18" />
-      <ellipse cx="210" cy="214" rx="120" ry="13" fill="#5fd0ff" opacity="0.16" />
-      <rect x="64" y="44" width="232" height="154" rx="14" fill="url(#bbody)" stroke={accent} strokeOpacity="0.18" />
-      <rect x="80" y="52" width="200" height="14" rx="4" fill="#0a0a0d" stroke={accent} strokeOpacity="0.3" />
-      {lights.map((c, i) => (
-        <g key={i}>
-          <circle cx={92 + i * 25} cy="45" r="6" fill={c} opacity="0.35" />
-          <circle cx={92 + i * 25} cy="45" r="3" fill={c} />
-        </g>
-      ))}
-      <rect x="86" y="74" width="188" height="56" rx="8" fill="url(#bglass)" />
-      <line x1="180" y1="74" x2="180" y2="130" stroke="#0b0b0f" strokeWidth="3" />
-      <rect x="86" y="134" width="188" height="10" rx="4" fill={accent} opacity="0.5" />
-      <rect x="92" y="150" width="40" height="10" rx="5" fill={accent} />
-      <rect x="228" y="150" width="40" height="10" rx="5" fill={accent} />
-      <rect x="78" y="164" width="204" height="26" rx="8" fill="#0c0c10" />
-      <rect x="150" y="170" width="60" height="8" rx="4" fill="#08080b" />
-      <ellipse cx="104" cy="192" rx="25" ry="21" fill="#050507" />
-      <ellipse cx="256" cy="192" rx="25" ry="21" fill="#050507" />
-      <ellipse cx="104" cy="192" rx="10" ry="8" fill="#1c1c22" stroke={accent} strokeOpacity="0.5" />
-      <ellipse cx="256" cy="192" rx="10" ry="8" fill="#1c1c22" stroke={accent} strokeOpacity="0.5" />
-    </svg>
-  );
-}
-
-/* ===================== VEHICLE DISPATCHER =============================== */
-function VehicleArt({ type, accent }: { type: VehicleType; accent: string }) {
-  if (type === 'van') return <VanSVG accent={accent} />;
-  if (type === 'shuttle') return <BusSVG accent={accent} />;
-  return <SUV accent={accent} />;
-}
-
 /* ===================== CHAUFFEUR SILHOUETTE ============================== */
 function Chauffeur() {
   return (
@@ -344,137 +183,12 @@ function Chauffeur() {
   );
 }
 
-/* ===================== ROTATING SHOWROOM (3D turntable) ================== */
-const STEP = stepFor(FLEET.length);
-
-export interface ShowroomHandle {
-  spinTo: (i: number) => void;
-}
-
-interface ShowroomProps {
-  fleet: Vehicle[];
-  onFront: (i: number) => void;
-}
-
-const Showroom = forwardRef<ShowroomHandle, ShowroomProps>(function Showroom({ fleet, onFront }, ref) {
-  const [rot, setRot] = useState(0);
-  const [hover, setHover] = useState(-1);
-  const [w, setW] = useState(640);
-  const stageRef = useRef<HTMLDivElement>(null);
-  const rotRef = useRef(0);
-  const targetRef = useRef<number | null>(null); // non-null while easing to a chosen car
-  const pausedRef = useRef(false); // paused on hover
-  const frontRef = useRef(-1);
-  const onFrontRef = useRef(onFront);
-  useEffect(() => {
-    onFrontRef.current = onFront;
-  });
-
-  // bring car i to the front of the turntable
-  const spinTo = useCallback(
-    (i: number) => {
-      targetRef.current = nearestSpinAngle(i, rotRef.current, fleet.length);
-    },
-    [fleet.length],
-  );
-  useImperativeHandle(ref, () => ({ spinTo }), [spinTo]);
-
-  // responsive orbit radius
-  useEffect(() => {
-    const measure = () => {
-      if (stageRef.current) setW(stageRef.current.clientWidth);
-    };
-    measure();
-    window.addEventListener('resize', measure);
-    return () => window.removeEventListener('resize', measure);
-  }, []);
-
-  // animation loop — slow continuous rotation + eased snapping
-  useEffect(() => {
-    let raf = 0;
-    const loop = () => {
-      let r = rotRef.current;
-      if (targetRef.current !== null) {
-        const d = targetRef.current - r;
-        if (Math.abs(d) < 0.0015) {
-          r = targetRef.current;
-          targetRef.current = null;
-        } else r += d * 0.09;
-      } else if (!pausedRef.current) {
-        r += 0.0038; // slow auto-rotation
-      }
-      rotRef.current = r;
-      setRot(r);
-      const best = frontIndex(r, fleet.length);
-      if (best !== frontRef.current) {
-        frontRef.current = best;
-        onFrontRef.current?.(best);
-      }
-      raf = requestAnimationFrame(loop);
-    };
-    raf = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(raf);
-  }, [fleet.length]);
-
-  const RX = Math.min(w * 0.34, 240);
-
-  return (
-    <div
-      className="nz-stage3"
-      ref={stageRef}
-      onMouseEnter={() => {
-        pausedRef.current = true;
-      }}
-      onMouseLeave={() => {
-        pausedRef.current = false;
-        setHover(-1);
-      }}
-    >
-      <div className="nz-axis" />
-      <div className="nz-disc" />
-      {fleet.map((car, i) => {
-        const a = i * STEP + rot;
-        const cos = Math.cos(a),
-          sin = Math.sin(a);
-        const depth = (cos + 1) / 2; // 0 = back, 1 = front
-        const scale = 0.5 + 0.58 * depth;
-        const x = sin * RX;
-        const y = cos * 20 + 4; // far cars ride higher/behind
-        return (
-          <div
-            key={car.name}
-            className="nz-orbit"
-            onMouseEnter={() => setHover(i)}
-            onClick={() => spinTo(i)}
-            style={{
-              transform: `translate(-50%,-50%) translate(${x}px, ${y}px) scale(${scale})`,
-              zIndex: Math.round(depth * 100),
-              opacity: 0.32 + 0.68 * depth,
-              filter: `blur(${(1 - depth) * 1.6}px)`,
-            }}
-          >
-            {hover === i && (
-              <div className="nz-ptag">
-                ${car.price}
-                <small>per hour + gratuity</small>
-              </div>
-            )}
-            <VehicleArt type={car.type} accent={car.accent} />
-            <div className="nz-cshadow" />
-          </div>
-        );
-      })}
-    </div>
-  );
-});
-
 /* ============================== APP ===================================== */
 export default function LuxuryTransportSite() {
   const [revealed, setRevealed] = useState(false);
   const [front, setFront] = useState(0);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const [toast, setToast] = useState('');
-  const showroomRef = useRef<ShowroomHandle>(null);
   const car = FLEET[front];
 
   // intro parallax tilt
@@ -484,8 +198,8 @@ export default function LuxuryTransportSite() {
     setTilt({ x: ((e.clientY - cy) / cy) * -10, y: ((e.clientX - cx) / cx) * 14 });
   }, []);
 
-  const pick = (i: number) => showroomRef.current?.spinTo(i);
-  const move = (d: number) => showroomRef.current?.spinTo(wrapIndex(front, d, FLEET.length));
+  const pick = (i: number) => setFront(i);
+  const move = (d: number) => setFront(wrapIndex(front, d, FLEET.length));
 
   const flash = (msg: string) => {
     setToast(msg);
@@ -505,7 +219,7 @@ export default function LuxuryTransportSite() {
     name: '',
     phone: '',
   });
-  // keep booking synced to showroom
+  // keep booking synced to the featured vehicle
   useEffect(() => {
     setBk((b) => ({ ...b, vehicle: FLEET[front].name }));
   }, [front]);
@@ -518,7 +232,6 @@ export default function LuxuryTransportSite() {
     }
     const [first, ...rest] = bk.name.trim().split(/\s+/);
     try {
-      // Wire into the maximal-stack backend (logs today; CRM/email next).
       await fetch('/api/bookings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -604,7 +317,7 @@ export default function LuxuryTransportSite() {
           </div>
         </nav>
 
-        {/* HERO / SHOWROOM */}
+        {/* HERO / 3D SHOWROOM */}
         <header className="nz-hero" id="fleet">
           <div className="nz-kicker rv" style={{ animationDelay: '.15s' }}>
             The Fleet
@@ -613,12 +326,11 @@ export default function LuxuryTransportSite() {
             Arrive in <em>quiet</em> command.
           </h1>
           <p className="nz-lead rv" style={{ animationDelay: '.35s' }}>
-            Five full-size luxury SUVs on a slow-turning showroom. Hover any vehicle to reveal its rate, tap to bring it
-            front, then reserve.
+            Explore the fleet in 3D — drag to see every angle, click a vehicle to open its doors, then reserve.
           </p>
 
-          <div className="rv" style={{ animationDelay: '.45s' }}>
-            <Showroom ref={showroomRef} fleet={FLEET} onFront={setFront} />
+          <div className="rv" style={{ animationDelay: '.45s', width: '100%' }}>
+            <Showroom3D vehicle={car} />
           </div>
 
           <div className="nz-model rv" style={{ animationDelay: '.5s' }}>
@@ -640,7 +352,7 @@ export default function LuxuryTransportSite() {
           <div className="nz-tabs rv" style={{ animationDelay: '.6s' }}>
             {FLEET.map((f, i) => (
               <button key={f.name} className={`nz-tab${i === front ? ' on' : ''}`} onClick={() => pick(i)}>
-                {f.name.split(' ').slice(-1)[0]}
+                {f.name}
               </button>
             ))}
           </div>
@@ -654,13 +366,13 @@ export default function LuxuryTransportSite() {
           </div>
         </header>
 
-        {/* SERVICES (all woven together, single page) */}
+        {/* SERVICES */}
         <section className="nz-sec" id="services">
           <div className="nz-eyebrow rv">What We Do</div>
           <h2 className="nz-sectitle rv">One Standard, Every Occasion</h2>
           <div className="nz-rule rv" />
           <p className="nz-lead rv" style={{ margin: '20px auto 0' }}>
-            The same discreet, professionally chauffeured SUVs — booked by the hour for whatever the day calls for.
+            The same discreet, professionally chauffeured fleet — booked by the hour for whatever the day calls for.
           </p>
           <div className="nz-services rv">
             {SERVICES.map((s) => (
@@ -672,7 +384,7 @@ export default function LuxuryTransportSite() {
             ))}
           </div>
           <p className="nz-lead rv" style={{ margin: '30px auto 0', fontSize: 12.5 }}>
-            All services billed hourly ($80–$100 by vehicle) plus gratuity · no initial or booking fees.
+            All services billed hourly ($80–$175 by vehicle) plus gratuity · no initial or booking fees.
           </p>
         </section>
 
