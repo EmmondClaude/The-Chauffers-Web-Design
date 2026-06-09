@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+
+# Next.js build output
+.next/
+out/
+dist/
+build/
+
+# Test / coverage artifacts
+coverage/
+
+# Secrets & local env (keep Sanity/NextAuth/Stripe/Maps keys out of git)
+.env
+.env.*
+!.env.example
+
+# Logs & OS / editor cruft
+*.log
+npm-debug.log*
+.DS_Store
+.idea/
+.vscode/
+next-env.d.ts
