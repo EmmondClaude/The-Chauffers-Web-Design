@@ -1,0 +1,21 @@
+name: CI
+
+# Runs on every PR and on pushes to main. Mark the "test" job as a required
+# status check in branch protection so nothing merges to main while it's red.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run test
+      - run: npm run build

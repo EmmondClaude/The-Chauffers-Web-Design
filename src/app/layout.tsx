@@ -5,16 +5,19 @@ import { Geist, Geist_Mono } from 'next/font/google';
 const geist = Geist({
   subsets: ['latin'],
   display: 'swap',
+  variable: '--font-geist-sans',
 });
 
 const geistMono = Geist_Mono({
   subsets: ['latin'],
   display: 'swap',
+  variable: '--font-geist-mono',
 });
 
 export const metadata: Metadata = {
-  title: 'The Chauffers - Premium Chauffeur Service',
-  description: 'Luxury chauffeur service with premium vehicles and professional drivers',
+  title: 'The Chauffeurs — Private Chauffeured SUVs',
+  description:
+    'Arrive in quiet command. Full-size luxury SUVs, professionally chauffeured — Las Vegas, 24/7, with drop-offs to California, Arizona & Utah.',
 };
 
 export default function RootLayout({
