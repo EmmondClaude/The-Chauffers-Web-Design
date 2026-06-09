@@ -10,7 +10,7 @@ import { FLEET, VEHICLE_TYPES } from '@/data/fleet';
 
 describe('rateFor', () => {
   it('returns the hourly rate for each vehicle in the fleet', () => {
-    expect(rateFor('Lincoln Navigator')).toBe(95);
+    expect(rateFor('Ford E-450 Shuttle · 16')).toBe(150);
     expect(rateFor('Cadillac Escalade')).toBe(100);
     expect(rateFor('Chevrolet Suburban')).toBe(80);
   });
@@ -24,14 +24,14 @@ describe('rateFor', () => {
 
 describe('estimateFor', () => {
   it('computes rate × hours', () => {
-    expect(estimateFor('Lincoln Navigator', '3')).toBe(285); // 95 * 3
+    expect(estimateFor('Ford E-450 Shuttle · 16', '3')).toBe(450); // 150 * 3
     expect(estimateFor('Cadillac Escalade', 4)).toBe(400); // 100 * 4
   });
 
   it('treats empty or non-numeric hours as 0 (never NaN)', () => {
-    expect(estimateFor('Lincoln Navigator', '')).toBe(0);
-    expect(estimateFor('Lincoln Navigator', 'abc')).toBe(0);
-    expect(estimateFor('Lincoln Navigator', undefined)).toBe(0);
+    expect(estimateFor('Cadillac Escalade', '')).toBe(0);
+    expect(estimateFor('Cadillac Escalade', 'abc')).toBe(0);
+    expect(estimateFor('Cadillac Escalade', undefined)).toBe(0);
   });
 
   it('returns 0 when the vehicle is unknown regardless of hours', () => {

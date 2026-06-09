@@ -10,9 +10,9 @@ export const CONFIG = {
   city: "Based in Las Vegas · 24/7 · Drop-offs to California, Arizona & Utah",
 } as const;
 
-// The three shapes the showroom knows how to render. A FLEET entry whose
-// `type` is outside this union renders nothing — the data-guard tests assert it.
-export const VEHICLE_TYPES = ["suv", "van", "bus"] as const;
+// Body silhouette the 3D showroom builds for a vehicle. Maps to a placeholder
+// model today; swap each to a real rigged .glb (doors as separate meshes) later.
+export const VEHICLE_TYPES = ["suv", "van", "shuttle"] as const;
 export type VehicleType = (typeof VEHICLE_TYPES)[number];
 
 export interface Vehicle {
@@ -23,14 +23,23 @@ export interface Vehicle {
   price: number;
   blurb: string;
   accent: string;
+  /** Paint colour used by the placeholder 3D body (hex). */
+  color: string;
+  year: number;
+  /**
+   * Filename (no extension) of the rigged model under public/models/.
+   * When public/models/<model>.glb exists it is loaded; otherwise the
+   * showroom falls back to placeholder geometry. See README / 3D notes.
+   */
+  model: string;
 }
 
 export const FLEET: Vehicle[] = [
-  { name: "Lincoln Navigator",      type: "suv", seats: 7,  bags: 5, price: 95,  blurb: "Aviator-grade quiet. The flagship arrival.",                  accent: "#c9a96a" },
-  { name: "Cadillac Escalade",      type: "suv", seats: 7,  bags: 5, price: 100, blurb: "The icon. Unmistakable street presence.",                      accent: "#d8c08a" },
-  { name: "Party Bus",              type: "bus", seats: 18, bags: 4, price: 100, blurb: "Lounge seating and lights — the celebration travels with you.", accent: "#d8c08a" },
-  { name: "Mercedes-Benz Sprinter", type: "van", seats: 12, bags: 8, price: 95,  blurb: "High-roof luxury van — executive group travel in comfort.",     accent: "#c0c4cc" },
-  { name: "Chevrolet Suburban",     type: "suv", seats: 8,  bags: 7, price: 80,  blurb: "The long-body standard for groups & gear.",                    accent: "#cdb583" },
+  { name: "Ford E-450 Shuttle · 16",  type: "shuttle", seats: 16, bags: 12, price: 150, year: 2015, color: "#0c0c0f", accent: "#c9a96a", model: "e450-16-black", blurb: "Sixteen seats of coach-built comfort — the group mover, in black." },
+  { name: "Ford E-450 Shuttle · 20",  type: "shuttle", seats: 20, bags: 14, price: 175, year: 2015, color: "#eef0f2", accent: "#d8c08a", model: "e450-20-white", blurb: "Twenty across in pearl white — the largest of the fleet." },
+  { name: "Cadillac Escalade",        type: "suv",     seats: 7,  bags: 5,  price: 100, year: 2015, color: "#0d0d10", accent: "#d8c08a", model: "escalade", blurb: "The icon. Unmistakable street presence." },
+  { name: "Chevrolet Suburban",       type: "suv",     seats: 8,  bags: 7,  price: 80,  year: 2015, color: "#101015", accent: "#cdb583", model: "suburban", blurb: "The long-body standard for groups & gear." },
+  { name: "Mercedes-Benz Sprinter",   type: "van",     seats: 12, bags: 8,  price: 95,  year: 2015, color: "#15151b", accent: "#c0c4cc", model: "sprinter", blurb: "High-roof luxury van — executive group travel in comfort." },
 ];
 
 export interface Service {
@@ -45,6 +54,6 @@ export const SERVICES: Service[] = [
   { icon: "♛", title: "Weddings & Events", desc: "Red-carpet arrivals and coordinated timing for your big day." },
   { icon: "✦", title: "Nights Out & Occasions", desc: "Dinners, concerts, and celebrations — arrive and leave in comfort." },
   { icon: "◷", title: "Hourly / As-Directed", desc: "Keep the SUV and chauffeur on call for the hours you need." },
-  { icon: "⚜", title: "Group & Family Travel", desc: "Full-size SUVs with room for the whole party and the luggage." },
+  { icon: "⚜", title: "Group & Family Travel", desc: "Full-size SUVs and shuttles with room for the whole party and the luggage." },
   { icon: "➤", title: "Intercity Drop-offs", desc: "Long-distance, one-way service from Las Vegas to California, Arizona & Utah." },
 ];

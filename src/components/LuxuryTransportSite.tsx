@@ -315,7 +315,7 @@ function BusSVG({ accent = '#d8c08a' }: { accent?: string }) {
 /* ===================== VEHICLE DISPATCHER =============================== */
 function VehicleArt({ type, accent }: { type: VehicleType; accent: string }) {
   if (type === 'van') return <VanSVG accent={accent} />;
-  if (type === 'bus') return <BusSVG accent={accent} />;
+  if (type === 'shuttle') return <BusSVG accent={accent} />;
   return <SUV accent={accent} />;
 }
 
