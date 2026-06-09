@@ -5,6 +5,7 @@ import { CONFIG, FLEET, SERVICES } from '@/data/fleet';
 import { estimateFor, firstName, validateBooking, validateLead } from '@/lib/booking';
 import { wrapIndex } from '@/lib/showroom';
 import Showroom3D from '@/components/Showroom3D';
+import Logo from '@/components/Logo';
 
 /* Content lives in @/data/fleet — the single source of truth the client edits.
    Pure booking logic lives in @/lib and is unit-tested. The 3D showroom lives
@@ -281,7 +282,9 @@ export default function LuxuryTransportSite() {
           </div>
         </div>
         <div className="nz-introbrand">{CONFIG.tagline.toUpperCase()}</div>
-        <div className="nz-introtitle">{CONFIG.brand}</div>
+        <div className="nz-introtitle">
+          <Logo variant="wordmark" hero size="clamp(40px,8.5vw,84px)" />
+        </div>
         <div className="nz-introsub">Your Driver Awaits</div>
         <button className="nz-enter" onClick={() => setRevealed(true)}>
           Enter
@@ -293,7 +296,7 @@ export default function LuxuryTransportSite() {
         {/* NAV */}
         <nav className="nz-nav rv" style={{ animationDelay: '.05s' }}>
           <div className="nz-logo">
-            <span className="nz-mono">TC</span>
+            <Logo variant="monogram" size={40} />
             <span className="nz-word">
               The <b>Chauffeurs</b>
             </span>
