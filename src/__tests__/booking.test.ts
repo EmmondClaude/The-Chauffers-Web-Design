@@ -10,9 +10,9 @@ import { FLEET, VEHICLE_TYPES } from '@/data/fleet';
 
 describe('rateFor', () => {
   it('returns the hourly rate for each vehicle in the fleet', () => {
-    expect(rateFor('Ford E-450 Shuttle · 16')).toBe(150);
-    expect(rateFor('Cadillac Escalade')).toBe(100);
-    expect(rateFor('Chevrolet Suburban')).toBe(80);
+    expect(rateFor('Ford E-450 Shuttle · 16')).toBe(198);
+    expect(rateFor('Cadillac Escalade')).toBe(120);
+    expect(rateFor('Chevrolet Suburban')).toBe(95);
   });
 
   it('returns 0 for an unknown or missing vehicle', () => {
@@ -24,8 +24,8 @@ describe('rateFor', () => {
 
 describe('estimateFor', () => {
   it('computes rate × hours', () => {
-    expect(estimateFor('Ford E-450 Shuttle · 16', '3')).toBe(450); // 150 * 3
-    expect(estimateFor('Cadillac Escalade', 4)).toBe(400); // 100 * 4
+    expect(estimateFor('Ford E-450 Shuttle · 16', '3')).toBe(594); // 198 * 3
+    expect(estimateFor('Cadillac Escalade', 4)).toBe(480); // 120 * 4
   });
 
   it('treats empty or non-numeric hours as 0 (never NaN)', () => {
@@ -39,7 +39,7 @@ describe('estimateFor', () => {
   });
 
   it("parses the leading integer of a mixed string ('3 hours' -> 3)", () => {
-    expect(estimateFor('Chevrolet Suburban', '3 hours')).toBe(240); // 80 * 3
+    expect(estimateFor('Chevrolet Suburban', '3 hours')).toBe(285); // 95 * 3
   });
 });
 

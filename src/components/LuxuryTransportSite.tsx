@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect, useCallback, type MouseEvent as ReactMouseEvent } from 'react';
-import { CONFIG, FLEET, SERVICES } from '@/data/fleet';
+import Link from 'next/link';
+import { CONFIG, FLEET, FEATURED_SERVICES, BOOKING } from '@/data/fleet';
 import { estimateFor, firstName, validateBooking, validateLead } from '@/lib/booking';
 import { wrapIndex } from '@/lib/showroom';
 import Showroom3D from '@/components/Showroom3D';
@@ -123,9 +124,15 @@ const CSS = `
 .nz-sectitle{font-family:var(--serif);font-size:clamp(30px,5.6vw,66px);line-height:1.02;text-align:center;margin-top:14px;
   text-shadow:0 0 50px rgba(201,169,106,.12);}
 .nz-rule{width:64px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:26px auto 0;}
-.nz-services{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:42px;}
+.nz-services{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:48px;}
+.nz-services-3{max-width:960px;margin-left:auto;margin-right:auto;gap:22px;}
 @media(max-width:820px){.nz-services{grid-template-columns:1fr 1fr;}}
-@media(max-width:520px){.nz-services{grid-template-columns:1fr;}}
+@media(max-width:560px){.nz-services{grid-template-columns:1fr;}}
+.nz-aboutlink{display:flex;justify-content:center;margin-top:34px;}
+.nz-aboutbtn{display:inline-flex;align-items:center;gap:10px;color:var(--gold-2);text-decoration:none;
+  font-size:11px;letter-spacing:.28em;text-transform:uppercase;padding:13px 26px;border:1px solid rgba(201,169,106,.4);
+  border-radius:2px;transition:.35s;}
+.nz-aboutbtn:hover{background:var(--gold);color:#0a0a0a;letter-spacing:.36em;}
 .nz-scard{position:relative;background:linear-gradient(180deg,var(--char),var(--char2));border:1px solid rgba(201,169,106,.14);
   border-radius:3px;padding:30px 26px;cursor:pointer;overflow:hidden;
   transition:transform .45s cubic-bezier(.16,1,.3,1),border-color .45s,box-shadow .45s;}
@@ -346,11 +353,11 @@ export default function LuxuryTransportSite() {
             <button className="nz-navlink" onClick={() => scrollTo('services')}>
               Services
             </button>
+            <Link className="nz-navlink" href="/about" style={{ textDecoration: 'none' }}>
+              About
+            </Link>
             <button className="nz-navlink" onClick={() => scrollTo('book')}>
               Reserve
-            </button>
-            <button className="nz-navlink" onClick={() => scrollTo('contact')}>
-              Concierge
             </button>
             <button className="nz-callbtn" onClick={() => scrollTo('book')}>
               Book a Car
@@ -415,8 +422,8 @@ export default function LuxuryTransportSite() {
           <p className="nz-lead rv" style={{ margin: '20px auto 0' }}>
             The same discreet, professionally chauffeured fleet — booked by the hour for whatever the day calls for.
           </p>
-          <div className="nz-services rv">
-            {SERVICES.map((s) => (
+          <div className="nz-services nz-services-3 rv">
+            {FEATURED_SERVICES.map((s) => (
               <div className="nz-scard" key={s.title} onClick={() => scrollTo('book')}>
                 <div className="nz-sicon">{s.icon}</div>
                 <div className="nz-stitle">{s.title}</div>
@@ -424,8 +431,13 @@ export default function LuxuryTransportSite() {
               </div>
             ))}
           </div>
-          <p className="nz-lead rv" style={{ margin: '30px auto 0', fontSize: 12.5 }}>
-            All services billed hourly ($80–$175 by vehicle) plus gratuity · no initial or booking fees.
+          <div className="nz-aboutlink rv">
+            <Link href="/about" className="nz-aboutbtn">
+              The full story &amp; every service <span aria-hidden>→</span>
+            </Link>
+          </div>
+          <p className="nz-lead rv" style={{ margin: '26px auto 0', fontSize: 12.5 }}>
+            Billed hourly ($95–$225 by vehicle) plus gratuity · no initial or booking fees · {BOOKING.minHoursNote}
           </p>
         </section>
 
@@ -516,7 +528,7 @@ export default function LuxuryTransportSite() {
                 <div className="qv">${estimate.toLocaleString()}</div>
               </div>
               <div className="nz-note">
-                Hourly rate shown. Gratuity added at service · no initial or booking fees.
+                Hourly rate shown · gratuity added at service · no booking fees. {BOOKING.minHoursNote}
               </div>
               <button className="nz-cta" onClick={submitBooking}>
                 Request Reservation

@@ -3,13 +3,18 @@
 Drop rigged **glTF 2.0 `.glb`** files here, named to match the `model` key in
 `src/data/fleet.ts`:
 
-| File                          | Vehicle                       |
-| ----------------------------- | ----------------------------- |
-| `e450-16-black.glb`           | Ford E-450 Shuttle · 16 (black) |
-| `e450-20-white.glb`           | Ford E-450 Shuttle · 20 (white) |
-| `escalade.glb`                | Cadillac Escalade             |
-| `suburban.glb`                | Chevrolet Suburban            |
-| `sprinter.glb`                | Mercedes-Benz Sprinter        |
+| File                          | Vehicle                          |
+| ----------------------------- | -------------------------------- |
+| `e450-16-black.glb`           | Ford E-450 Shuttle · 16 (black)  |
+| `e450-20-white.glb`           | Ford E-450 Shuttle · 20 (white)  |
+| `sprinter.glb`                | Mercedes-Benz Sprinter · 14      |
+| `escalade.glb`                | Cadillac Escalade                |
+| `suburban.glb`                | Chevrolet Suburban               |
+| `yukon.glb`                   | GMC Yukon                        |
+
+The About page can also use `chauffeur.glb` (the rotating figure) and a Las
+Vegas backdrop — drop a `chauffeur.glb` here and an uploaded skyline image in
+`public/images/` to replace the placeholders in `AboutScene.tsx`.
 
 ## Requirements
 - **Format:** `.glb` (glTF 2.0). Convert FBX/OBJ/blend in Blender → *Export → glTF (.glb)*.
