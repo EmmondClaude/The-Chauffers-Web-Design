@@ -1,5 +1,12 @@
 import LuxuryTransportSite from '@/components/LuxuryTransportSite';
+import SmoothScroll from '@/components/SmoothScroll';
+import ScrollProgress from '@/components/ScrollProgress';
 
 export default function Home() {
-  return <LuxuryTransportSite />;
+  return (
+    <SmoothScroll>
+      <ScrollProgress />
+      <LuxuryTransportSite />
+    </SmoothScroll>
+  );
 }

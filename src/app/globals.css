@@ -17,3 +17,16 @@ body {
 * {
   box-sizing: border-box;
 }
+
+/* Scroll progress hairline (Framer Motion) */
+.tc-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  transform-origin: 0 50%;
+  background: linear-gradient(90deg, #9c7f48, #c9a96a 40%, #e8d8a8 60%, #c9a96a);
+  z-index: 100;
+  box-shadow: 0 0 12px rgba(201, 169, 106, 0.6);
+}

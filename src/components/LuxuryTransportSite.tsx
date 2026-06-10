@@ -51,8 +51,12 @@ const CSS = `
 /* ---- reveal of main ---- */
 .nz-main{position:relative;z-index:2;opacity:0;}
 .nz-main.show{opacity:1;}
-.nz-main.show .rv{animation:fadeUp .9s cubic-bezier(.16,1,.3,1) both;}
+/* scroll-reveal — elements rise + fade as they enter the viewport */
+.rv{opacity:0;transform:translateY(42px);
+  transition:opacity 1s cubic-bezier(.16,1,.3,1),transform 1s cubic-bezier(.16,1,.3,1);will-change:opacity,transform;}
+.rv.in-view{opacity:1;transform:none;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(34px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.rv{opacity:1!important;transform:none!important;transition:none;}}
 
 /* ---- nav ---- */
 .nz-nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;
@@ -74,11 +78,17 @@ const CSS = `
 
 /* ---- hero / showroom ---- */
 .nz-hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:120px 20px 60px;position:relative;}
-.nz-kicker{font-size:11px;letter-spacing:.5em;color:var(--gold);text-transform:uppercase;margin-bottom:18px;}
-.nz-h1{font-family:var(--serif);font-size:clamp(34px,7vw,72px);line-height:1.02;text-align:center;max-width:14ch;}
+  padding:130px 20px 80px;position:relative;}
+.nz-hero::before{content:"";position:absolute;left:50%;top:42%;width:min(1100px,120vw);height:760px;
+  transform:translate(-50%,-50%);pointer-events:none;z-index:0;
+  background:radial-gradient(closest-side,rgba(201,169,106,.16),rgba(201,169,106,.05) 45%,transparent 72%);
+  filter:blur(8px);}
+.nz-hero > *{position:relative;z-index:1;}
+.nz-kicker{font-size:11px;letter-spacing:.62em;color:var(--gold-2);text-transform:uppercase;margin-bottom:20px;}
+.nz-h1{font-family:var(--serif);font-size:clamp(40px,8.2vw,104px);line-height:.98;text-align:center;max-width:16ch;
+  letter-spacing:-.005em;text-shadow:0 0 60px rgba(201,169,106,.14);}
 .nz-h1 em{font-style:italic;color:var(--gold-2);}
-.nz-lead{margin-top:18px;color:var(--silver);font-size:14px;letter-spacing:.06em;text-align:center;max-width:46ch;line-height:1.7;}
+.nz-lead{margin-top:22px;color:var(--silver);font-size:14.5px;letter-spacing:.06em;text-align:center;max-width:48ch;line-height:1.75;}
 
 /* ---- 3D showroom stage ---- */
 .nz-stage3d{position:relative;width:min(860px,96vw);height:460px;margin:18px auto 2px;border-radius:12px;overflow:hidden;
@@ -108,16 +118,21 @@ const CSS = `
 .nz-arrow:hover{background:var(--gold);color:#0a0a0a;}
 
 /* ---- generic section ---- */
-.nz-sec{padding:90px clamp(18px,5vw,56px);max-width:1080px;margin:0 auto;}
-.nz-eyebrow{font-size:11px;letter-spacing:.5em;color:var(--gold);text-transform:uppercase;text-align:center;}
-.nz-sectitle{font-family:var(--serif);font-size:clamp(28px,5vw,48px);text-align:center;margin-top:12px;}
-.nz-rule{width:60px;height:1px;background:var(--gold);margin:22px auto 0;}
+.nz-sec{padding:140px clamp(18px,5vw,56px);max-width:1080px;margin:0 auto;}
+.nz-eyebrow{font-size:11px;letter-spacing:.62em;color:var(--gold-2);text-transform:uppercase;text-align:center;}
+.nz-sectitle{font-family:var(--serif);font-size:clamp(30px,5.6vw,66px);line-height:1.02;text-align:center;margin-top:14px;
+  text-shadow:0 0 50px rgba(201,169,106,.12);}
+.nz-rule{width:64px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:26px auto 0;}
 .nz-services{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:42px;}
 @media(max-width:820px){.nz-services{grid-template-columns:1fr 1fr;}}
 @media(max-width:520px){.nz-services{grid-template-columns:1fr;}}
-.nz-scard{background:linear-gradient(180deg,var(--char),var(--char2));border:1px solid rgba(201,169,106,.16);
-  border-radius:6px;padding:26px 22px;cursor:pointer;transition:.35s;}
-.nz-scard:hover{border-color:var(--gold);transform:translateY(-4px);box-shadow:0 24px 50px rgba(0,0,0,.5);}
+.nz-scard{position:relative;background:linear-gradient(180deg,var(--char),var(--char2));border:1px solid rgba(201,169,106,.14);
+  border-radius:3px;padding:30px 26px;cursor:pointer;overflow:hidden;
+  transition:transform .45s cubic-bezier(.16,1,.3,1),border-color .45s,box-shadow .45s;}
+.nz-scard::after{content:"";position:absolute;left:0;top:0;height:2px;width:100%;transform:scaleX(0);transform-origin:left;
+  background:linear-gradient(90deg,var(--gold),var(--gold-2));transition:transform .5s cubic-bezier(.16,1,.3,1);}
+.nz-scard:hover{border-color:rgba(201,169,106,.5);transform:translateY(-6px);box-shadow:0 30px 60px rgba(0,0,0,.55);}
+.nz-scard:hover::after{transform:scaleX(1);}
 .nz-sicon{font-size:24px;color:var(--gold-2);line-height:1;}
 .nz-stitle{font-family:var(--serif);font-size:21px;color:var(--cream);margin-top:14px;}
 .nz-sdesc{color:var(--silver);font-size:13px;letter-spacing:.04em;line-height:1.65;margin-top:9px;}
@@ -224,6 +239,29 @@ export default function LuxuryTransportSite() {
   useEffect(() => {
     setBk((b) => ({ ...b, vehicle: FLEET[front].name }));
   }, [front]);
+
+  // scroll-reveal: animate .rv elements in as they enter the viewport
+  useEffect(() => {
+    if (!revealed) return;
+    const els = Array.from(document.querySelectorAll('.rv'));
+    if (typeof IntersectionObserver === 'undefined') {
+      els.forEach((el) => el.classList.add('in-view'));
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((en) => {
+          if (en.isIntersecting) {
+            en.target.classList.add('in-view');
+            io.unobserve(en.target);
+          }
+        });
+      },
+      { rootMargin: '0px 0px -12% 0px', threshold: 0.12 },
+    );
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, [revealed]);
   const estimate = estimateFor(bk.vehicle, bk.hours);
 
   const submitBooking = async () => {
