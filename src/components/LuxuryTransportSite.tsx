@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { CONFIG, FLEET, FEATURED_SERVICES, BOOKING } from '@/data/fleet';
 import { estimateFor, firstName, validateBooking, validateLead } from '@/lib/booking';
 import { wrapIndex } from '@/lib/showroom';
-import Showroom3D from '@/components/Showroom3D';
+import VehicleShowcase from '@/components/VehicleShowcase';
 import Logo from '@/components/Logo';
 
 /* Content lives in @/data/fleet — the single source of truth the client edits.
@@ -98,6 +98,19 @@ const CSS = `
 .nz-stage3d canvas{display:block;width:100%!important;height:100%!important;touch-action:none;}
 .nz-stage3d-hint{position:absolute;bottom:12px;left:0;right:0;text-align:center;font-size:10px;letter-spacing:.22em;
   text-transform:uppercase;color:var(--silver);opacity:.65;pointer-events:none;}
+
+/* ---- vehicle video showcase ---- */
+.nz-stage-media{position:relative;width:min(880px,96vw);height:clamp(320px,52vw,500px);margin:18px auto 2px;border-radius:12px;
+  overflow:hidden;border:1px solid rgba(201,169,106,.16);background:radial-gradient(120% 120% at 50% 18%,#101016,#06060a 72%);
+  box-shadow:inset 0 0 90px rgba(0,0,0,.6),0 30px 60px rgba(0,0,0,.45);}
+.nz-media{width:100%;height:100%;object-fit:cover;display:block;}
+.nz-playbtn{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);display:inline-flex;align-items:center;gap:12px;
+  background:rgba(8,8,11,.55);backdrop-filter:blur(6px);border:1px solid rgba(201,169,106,.5);color:var(--gold-2);
+  padding:14px 28px;border-radius:40px;cursor:pointer;font-size:11px;letter-spacing:.28em;text-transform:uppercase;
+  transition:.35s;box-shadow:0 12px 30px rgba(0,0,0,.4);}
+.nz-playbtn:hover{background:var(--gold);color:#0a0a0a;border-color:var(--gold);letter-spacing:.34em;}
+.nz-playicon{font-size:12px;}
+.nz-playlabel{font-weight:600;}
 .nz-stage3d-fallback{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;}
 .nz-stage3d-name{font-family:var(--serif);font-size:clamp(24px,4vw,34px);color:var(--gold-2);}
 
@@ -378,7 +391,7 @@ export default function LuxuryTransportSite() {
           </p>
 
           <div className="rv" style={{ animationDelay: '.45s', width: '100%' }}>
-            <Showroom3D vehicle={car} />
+            <VehicleShowcase vehicle={car} />
           </div>
 
           <div className="nz-model rv" style={{ animationDelay: '.5s' }}>
