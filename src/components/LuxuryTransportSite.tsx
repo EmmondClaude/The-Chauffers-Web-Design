@@ -384,11 +384,8 @@ export default function LuxuryTransportSite() {
             The Fleet
           </div>
           <h1 className="nz-h1 rv" style={{ animationDelay: '.25s' }}>
-            Arrive in <em>quiet</em> command.
+            Arrive in <em>quiet</em> command
           </h1>
-          <p className="nz-lead rv" style={{ animationDelay: '.35s' }}>
-            Explore the fleet in 3D — drag to see every angle, click a vehicle to open its doors, then reserve.
-          </p>
 
           <div className="rv" style={{ animationDelay: '.45s', width: '100%' }}>
             <VehicleShowcase vehicle={car} />
