@@ -284,6 +284,13 @@ export default function LuxuryTransportSite() {
     els.forEach((el) => io.observe(el));
     return () => io.disconnect();
   }, [revealed]);
+
+  // auto-enter once the loading sequence completes (click to skip ahead)
+  useEffect(() => {
+    if (revealed) return;
+    const t = setTimeout(() => setRevealed(true), 3000);
+    return () => clearTimeout(t);
+  }, [revealed]);
   const estimate = estimateFor(bk.vehicle, bk.hours);
 
   const submitBooking = async () => {
@@ -334,7 +341,11 @@ export default function LuxuryTransportSite() {
       <div className="nz-grain" />
 
       {/* ===================== INTRO ===================== */}
-      <div className={`nz-intro${revealed ? ' hide' : ''}`} onMouseMove={onMove}>
+      <div
+        className={`nz-intro${revealed ? ' hide' : ''}`}
+        onMouseMove={onMove}
+        onClick={() => setRevealed(true)}
+      >
         <div className="nz-halo" />
         <div className="nz-stage">
           <div className="nz-fig" style={{ transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)` }}>
@@ -349,9 +360,6 @@ export default function LuxuryTransportSite() {
           </div>
           <div className="nz-loadtext">Preparing your arrival</div>
         </div>
-        <button className="nz-enter" onClick={() => setRevealed(true)}>
-          Enter
-        </button>
       </div>
 
       {/* ===================== MAIN ===================== */}
