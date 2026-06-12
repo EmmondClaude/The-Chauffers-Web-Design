@@ -12,14 +12,15 @@ const STYLE = `
 .tc-emblem{position:relative;display:inline-block;line-height:0;}
 .tc-emblem img{display:block;width:100%;height:100%;object-fit:contain;
   mix-blend-mode:lighten;}
-.tc-emblem-glint{position:absolute;top:0;left:8%;width:46%;height:100%;pointer-events:none;
-  background:linear-gradient(100deg,transparent,rgba(255,247,224,.45),transparent);
-  transform:translateX(-150%) skewX(-12deg);mix-blend-mode:screen;
-  animation:tcGlint 6.5s ease-in-out 1.4s infinite;}
+.tc-emblem-glint{position:absolute;top:0;left:0;width:16%;height:100%;pointer-events:none;
+  background:linear-gradient(100deg,transparent,rgba(255,247,224,.32),transparent);
+  transform:translateX(-220%) skewX(-14deg);mix-blend-mode:screen;opacity:0;
+  animation:tcGlint 9s ease-in-out 2.4s infinite;}
 @keyframes tcGlint{
-  0%{transform:translateX(-150%) skewX(-12deg)}
-  16%{transform:translateX(250%) skewX(-12deg)}
-  100%{transform:translateX(250%) skewX(-12deg)}
+  0%{transform:translateX(-220%) skewX(-14deg);opacity:0}
+  2%{opacity:.85}
+  9%{transform:translateX(620%) skewX(-14deg);opacity:.85}
+  12%,100%{transform:translateX(620%) skewX(-14deg);opacity:0}
 }
 @media (prefers-reduced-motion: reduce){ .tc-emblem-glint{animation:none!important;opacity:0} }
 `;
