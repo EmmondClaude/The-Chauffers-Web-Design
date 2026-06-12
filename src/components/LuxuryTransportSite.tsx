@@ -109,7 +109,8 @@ const CSS = `
   padding:14px 28px;border-radius:40px;cursor:pointer;font-size:11px;letter-spacing:.28em;text-transform:uppercase;
   transition:.35s;box-shadow:0 12px 30px rgba(0,0,0,.4);}
 .nz-playbtn:hover{background:var(--gold);color:#0a0a0a;border-color:var(--gold);letter-spacing:.34em;}
-.nz-playicon{font-size:12px;}
+.nz-playicon{display:inline-block;width:0;height:0;border-style:solid;border-width:5px 0 5px 9px;
+  border-color:transparent transparent transparent currentColor;}
 .nz-playlabel{font-weight:600;}
 .nz-stage3d-fallback{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;}
 .nz-stage3d-name{font-family:var(--serif);font-size:clamp(24px,4vw,34px);color:var(--gold-2);}
@@ -153,7 +154,7 @@ const CSS = `
   background:linear-gradient(90deg,var(--gold),var(--gold-2));transition:transform .5s cubic-bezier(.16,1,.3,1);}
 .nz-scard:hover{border-color:rgba(201,169,106,.5);transform:translateY(-6px);box-shadow:0 30px 60px rgba(0,0,0,.55);}
 .nz-scard:hover::after{transform:scaleX(1);}
-.nz-sicon{font-size:24px;color:var(--gold-2);line-height:1;}
+.nz-snum{font-family:var(--serif);font-size:26px;color:var(--gold-2);line-height:1;letter-spacing:.04em;opacity:.85;}
 .nz-stitle{font-family:var(--serif);font-size:21px;color:var(--cream);margin-top:14px;}
 .nz-sdesc{color:var(--silver);font-size:13px;letter-spacing:.04em;line-height:1.65;margin-top:9px;}
 
@@ -433,9 +434,9 @@ export default function LuxuryTransportSite() {
             The same discreet, professionally chauffeured fleet — booked by the hour for whatever the day calls for.
           </p>
           <div className="nz-services nz-services-3 rv">
-            {FEATURED_SERVICES.map((s) => (
+            {FEATURED_SERVICES.map((s, i) => (
               <div className="nz-scard" key={s.title} onClick={() => scrollTo('book')}>
-                <div className="nz-sicon">{s.icon}</div>
+                <div className="nz-snum">{String(i + 1).padStart(2, '0')}</div>
                 <div className="nz-stitle">{s.title}</div>
                 <div className="nz-sdesc">{s.desc}</div>
               </div>

@@ -1,5 +1,5 @@
 /* =========================================================================
-   EDIT EVERYTHING HERE  ▸ single source of truth for the client to update
+   EDIT EVERYTHING HERE  —  single source of truth for the client to update
    ========================================================================= */
 
 export const CONFIG = {
@@ -70,19 +70,18 @@ export const FLEET: Vehicle[] = [
 ];
 
 export interface Service {
-  icon: string;
   title: string;
   desc: string;
 }
 
 export const SERVICES: Service[] = [
-  { icon: "✈", title: "Airport Arrivals & Departures", desc: "Curbside meet-and-greet with flight-aware timing, so the car is there when you land." },
-  { icon: "❖", title: "Corporate & Roadshows", desc: "Discreet, on-schedule multi-stop travel for executives and teams." },
-  { icon: "♛", title: "Weddings & Events", desc: "Red-carpet arrivals and coordinated timing for your big day." },
-  { icon: "✦", title: "Nights Out & Occasions", desc: "Dinners, concerts, and celebrations — arrive and leave in comfort." },
-  { icon: "◷", title: "Hourly / As-Directed", desc: "Keep the SUV and chauffeur on call for the hours you need." },
-  { icon: "⚜", title: "Group & Family Travel", desc: "Full-size SUVs and shuttles with room for the whole party and the luggage." },
-  { icon: "➤", title: "Intercity Drop-offs", desc: "Long-distance, one-way service from Las Vegas to California, Arizona & Utah." },
+  { title: "Airport Arrivals & Departures", desc: "Curbside meet-and-greet with flight-aware timing, so the car is there when you land." },
+  { title: "Corporate & Roadshows", desc: "Discreet, on-schedule multi-stop travel for executives and teams." },
+  { title: "Weddings & Events", desc: "Red-carpet arrivals and coordinated timing for your big day." },
+  { title: "Nights Out & Occasions", desc: "Dinners, concerts, and celebrations — arrive and leave in comfort." },
+  { title: "Hourly / As-Directed", desc: "Keep the SUV and chauffeur on call for the hours you need." },
+  { title: "Group & Family Travel", desc: "Full-size SUVs and shuttles with room for the whole party and the luggage." },
+  { title: "Intercity Drop-offs", desc: "Long-distance, one-way service from Las Vegas to California, Arizona & Utah." },
 ];
 
 // The three services featured on the home page (the rest live on /about).
