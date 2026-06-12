@@ -73,7 +73,7 @@ export default function AboutPage() {
       {/* nav */}
       <nav className="ab-nav">
         <Link href="/" aria-label="The Chauffeurs — home">
-          <Emblem src={BRAND_EMBLEM} size={40} badge />
+          <Emblem src={BRAND_EMBLEM} size={40} />
         </Link>
         <Link href="/" className="ab-back">
           ‹ Back to the fleet

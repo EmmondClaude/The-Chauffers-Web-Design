@@ -338,7 +338,7 @@ export default function LuxuryTransportSite() {
         <div className="nz-halo" />
         <div className="nz-stage">
           <div className="nz-fig" style={{ transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)` }}>
-            <Emblem src={BRAND_EMBLEM} size="clamp(200px,34vw,320px)" />
+            <Emblem src={BRAND_EMBLEM} size="clamp(200px,34vw,320px)" hero />
           </div>
         </div>
         <div className="nz-introbrand">{CONFIG.tagline.toUpperCase()}</div>
@@ -359,7 +359,7 @@ export default function LuxuryTransportSite() {
         {/* NAV */}
         <nav className="nz-nav rv" style={{ animationDelay: '.05s' }}>
           <div className="nz-logo">
-            <Emblem src={BRAND_EMBLEM} size={44} badge />
+            <Emblem src={BRAND_EMBLEM} size={44} />
             <span className="nz-word">
               The <b>Chauffeurs</b>
             </span>
