@@ -32,22 +32,43 @@ const CSS = `
 /* ---- intro overlay ---- */
 .nz-intro{position:fixed;inset:0;z-index:80;display:flex;flex-direction:column;
   align-items:center;justify-content:center;background:radial-gradient(60% 60% at 50% 40%,#16161d,#06060a 75%);
-  transition:opacity 1s ease, transform 1.1s cubic-bezier(.16,1,.3,1);}
-.nz-intro.hide{opacity:0;transform:scale(1.08);pointer-events:none;}
-.nz-stage{perspective:900px;}
+  clip-path:inset(0 0 0 0);
+  transition:opacity .9s ease, transform 1.2s cubic-bezier(.16,1,.3,1), clip-path 1.2s cubic-bezier(.83,0,.17,1);}
+.nz-intro.hide{opacity:0;transform:scale(1.06);clip-path:inset(0 0 100% 0);pointer-events:none;}
+.nz-stage{perspective:900px;animation:introRise 1.1s cubic-bezier(.16,1,.3,1) .1s both;}
 .nz-fig{transform-style:preserve-3d;transition:transform .15s ease-out;filter:drop-shadow(0 40px 60px rgba(0,0,0,.8));}
 .nz-halo{position:absolute;width:520px;height:520px;border-radius:50%;left:50%;top:46%;
   transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(201,169,106,.22),transparent 60%);
   animation:pulse 5s ease-in-out infinite;}
 @keyframes pulse{0%,100%{opacity:.5;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.07)}}
+@keyframes introRise{0%{opacity:0;transform:translateY(24px)}100%{opacity:1;transform:none}}
 .nz-introbrand{font-family:var(--serif);font-size:13px;letter-spacing:.7em;color:var(--gold);
-  margin-bottom:10px;text-indent:.7em;}
-.nz-introtitle{font-family:var(--serif);font-size:clamp(40px,9vw,86px);line-height:1;letter-spacing:.02em;}
-.nz-introsub{margin-top:14px;font-size:11px;letter-spacing:.45em;color:var(--silver);text-transform:uppercase;}
-.nz-enter{margin-top:40px;background:none;border:1px solid rgba(201,169,106,.5);color:var(--gold-2);
+  margin-bottom:10px;text-indent:.7em;animation:introRise .9s ease .4s both;}
+.nz-introtitle{font-family:var(--serif);font-size:clamp(40px,9vw,86px);line-height:1;letter-spacing:.02em;
+  animation:introRise .9s ease .55s both;}
+.nz-introsub{margin-top:14px;font-size:11px;letter-spacing:.45em;color:var(--silver);text-transform:uppercase;
+  animation:introRise .9s ease .72s both;}
+.nz-loadwrap{margin-top:36px;display:flex;flex-direction:column;align-items:center;gap:12px;
+  animation:introRise .9s ease .88s both;}
+.nz-loadbar{width:210px;height:1px;background:rgba(201,169,106,.16);position:relative;overflow:hidden;border-radius:2px;}
+.nz-loadbar i{position:absolute;left:0;top:0;height:100%;width:0;border-radius:2px;
+  background:linear-gradient(90deg,var(--gold),var(--gold-2));box-shadow:0 0 10px rgba(201,169,106,.6);
+  animation:loadFill 1.9s cubic-bezier(.65,0,.35,1) .6s forwards;}
+@keyframes loadFill{to{width:100%}}
+.nz-loadtext{font-size:9px;letter-spacing:.42em;color:var(--silver);text-transform:uppercase;
+  animation:loadTextOut .5s ease 2.45s forwards;}
+@keyframes loadTextOut{to{opacity:0;transform:translateY(-4px)}}
+.nz-enter{margin-top:18px;background:none;border:1px solid rgba(201,169,106,.5);color:var(--gold-2);
   font-family:var(--sans);font-size:11px;letter-spacing:.4em;padding:16px 40px;cursor:pointer;
-  text-transform:uppercase;transition:.4s;border-radius:2px;}
+  text-transform:uppercase;transition:background .4s,color .4s,border-color .4s,letter-spacing .4s;border-radius:2px;
+  opacity:0;animation:enterIn .8s cubic-bezier(.16,1,.3,1) 2.55s both;}
+@keyframes enterIn{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:none}}
 .nz-enter:hover{background:var(--gold);color:#0a0a0a;border-color:var(--gold);letter-spacing:.5em;}
+@media (prefers-reduced-motion:reduce){
+  .nz-stage,.nz-introbrand,.nz-introtitle,.nz-introsub,.nz-loadwrap,.nz-enter{animation:none!important;opacity:1!important;transform:none!important}
+  .nz-loadbar i{animation:none!important;width:100%!important}
+  .nz-loadtext{animation:none!important}
+}
 
 /* ---- reveal of main ---- */
 .nz-main{position:relative;z-index:2;opacity:0;}
@@ -345,6 +366,12 @@ export default function LuxuryTransportSite() {
           <Logo variant="wordmark" hero size="clamp(40px,8.5vw,84px)" />
         </div>
         <div className="nz-introsub">Your Driver Awaits</div>
+        <div className="nz-loadwrap">
+          <div className="nz-loadbar">
+            <i />
+          </div>
+          <div className="nz-loadtext">Preparing your arrival</div>
+        </div>
         <button className="nz-enter" onClick={() => setRevealed(true)}>
           Enter
         </button>
