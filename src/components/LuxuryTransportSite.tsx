@@ -125,14 +125,18 @@ const CSS = `
   overflow:hidden;border:1px solid rgba(201,169,106,.16);background:radial-gradient(120% 120% at 50% 18%,#101016,#06060a 72%);
   box-shadow:inset 0 0 90px rgba(0,0,0,.6),0 30px 60px rgba(0,0,0,.45);}
 .nz-media{width:100%;height:100%;object-fit:cover;display:block;}
-.nz-playbtn{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);display:inline-flex;align-items:center;gap:12px;
-  background:rgba(8,8,11,.55);backdrop-filter:blur(6px);border:1px solid rgba(201,169,106,.5);color:var(--gold-2);
-  padding:14px 28px;border-radius:40px;cursor:pointer;font-size:11px;letter-spacing:.28em;text-transform:uppercase;
-  transition:.35s;box-shadow:0 12px 30px rgba(0,0,0,.4);}
-.nz-playbtn:hover{background:var(--gold);color:#0a0a0a;border-color:var(--gold);letter-spacing:.34em;}
-.nz-playicon{display:inline-block;width:0;height:0;border-style:solid;border-width:5px 0 5px 9px;
-  border-color:transparent transparent transparent currentColor;}
+.nz-playbtn{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);display:inline-flex;align-items:center;
+  background:#0a0a0d;border:1px solid var(--gold);color:var(--gold-2);
+  padding:15px 34px;border-radius:40px;cursor:pointer;font-size:11px;letter-spacing:.3em;text-transform:uppercase;
+  transition:background .35s,color .35s,letter-spacing .35s,box-shadow .35s;
+  box-shadow:0 0 16px rgba(201,169,106,.5),0 0 40px rgba(201,169,106,.22);
+  animation:btnGlow 3s ease-in-out infinite;}
+@keyframes btnGlow{0%,100%{box-shadow:0 0 14px rgba(201,169,106,.4),0 0 34px rgba(201,169,106,.16)}
+  50%{box-shadow:0 0 24px rgba(201,169,106,.75),0 0 54px rgba(201,169,106,.34)}}
+.nz-playbtn:hover{background:var(--gold);color:#0a0a0a;border-color:var(--gold);letter-spacing:.38em;
+  box-shadow:0 0 28px rgba(201,169,106,.85),0 0 64px rgba(201,169,106,.42);}
 .nz-playlabel{font-weight:600;}
+@media (prefers-reduced-motion:reduce){.nz-playbtn{animation:none}}
 .nz-stage3d-fallback{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;}
 .nz-stage3d-name{font-family:var(--serif);font-size:clamp(24px,4vw,34px);color:var(--gold-2);}
 

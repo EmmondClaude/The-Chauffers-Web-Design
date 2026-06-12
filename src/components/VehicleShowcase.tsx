@@ -44,8 +44,7 @@ export default function VehicleShowcase({ vehicle }: { vehicle: Vehicle }) {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img className="nz-media" src={vehicle.poster} alt={vehicle.name} />
           {hasVideo && (
-            <button className="nz-playbtn" onClick={play} aria-label={`Play: step inside the ${vehicle.name}`}>
-              <span className="nz-playicon" aria-hidden />
+            <button className="nz-playbtn" onClick={play} aria-label={`Step inside the ${vehicle.name}`}>
               <span className="nz-playlabel">Step inside</span>
             </button>
           )}
