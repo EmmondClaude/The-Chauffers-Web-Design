@@ -48,6 +48,9 @@ export interface Vehicle {
 // the repo / move to our own CDN) — they're hotlinked for now.
 const M = "https://d8j0ntlcm91z4.cloudfront.net/user_3ECGVFZTaGiKHb6MBbVpPbvllLv/";
 
+// The 3D brand emblem (Higgsfield render). Hotlinked for now; self-host TODO.
+export const BRAND_EMBLEM = M + "hf_20260612_053130_ab025f3a-2502-40f4-9038-516b46133177.png";
+
 export const FLEET: Vehicle[] = [
   { name: "Ford E-450 Shuttle · 16",  type: "shuttle", seats: 16, bags: 12, price: 198, year: 2015, color: "#0c0c0f", accent: "#c9a96a", model: "e450-16-black", blurb: "Sixteen seats of coach-built comfort — the group mover, in black.",
     poster: M + "hf_20260611_063738_85a95ee1-4633-4a38-bc4b-39ab12221cec_min.webp",

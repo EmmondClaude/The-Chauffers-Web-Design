@@ -2,8 +2,8 @@
 
 import Link from 'next/link';
 import AboutScene from '@/components/AboutScene';
-import Logo from '@/components/Logo';
-import { CONFIG } from '@/data/fleet';
+import Emblem from '@/components/Emblem';
+import { CONFIG, BRAND_EMBLEM } from '@/data/fleet';
 
 const CSS = `
 .ab-root{position:relative;background:#070709;color:#f4efe6;min-height:100vh;overflow-x:hidden;
@@ -73,7 +73,7 @@ export default function AboutPage() {
       {/* nav */}
       <nav className="ab-nav">
         <Link href="/" aria-label="The Chauffeurs — home">
-          <Logo variant="monogram" size={38} />
+          <Emblem src={BRAND_EMBLEM} size={40} badge />
         </Link>
         <Link href="/" className="ab-back">
           ‹ Back to the fleet

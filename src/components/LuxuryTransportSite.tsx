@@ -2,11 +2,11 @@
 
 import { useState, useEffect, useCallback, type MouseEvent as ReactMouseEvent } from 'react';
 import Link from 'next/link';
-import { CONFIG, FLEET, FEATURED_SERVICES, BOOKING } from '@/data/fleet';
+import { CONFIG, FLEET, FEATURED_SERVICES, BOOKING, BRAND_EMBLEM } from '@/data/fleet';
 import { estimateFor, firstName, validateBooking, validateLead } from '@/lib/booking';
 import { wrapIndex } from '@/lib/showroom';
 import VehicleShowcase from '@/components/VehicleShowcase';
-import Logo from '@/components/Logo';
+import Emblem from '@/components/Emblem';
 
 /* Content lives in @/data/fleet — the single source of truth the client edits.
    Pure booking logic lives in @/lib and is unit-tested. The 3D showroom lives
@@ -217,30 +217,6 @@ const CSS = `
 `;
 
 /* ===================== CHAUFFEUR SILHOUETTE ============================== */
-function Chauffeur() {
-  return (
-    <svg width="300" height="360" viewBox="0 0 300 360" aria-label="Chauffeur silhouette">
-      <defs>
-        <linearGradient id="rim" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#c9a96a" stopOpacity="0.85" />
-          <stop offset="0.18" stopColor="#1a1a1f" />
-          <stop offset="1" stopColor="#050507" />
-        </linearGradient>
-      </defs>
-      <path d="M40 360 C40 280 78 250 150 250 C222 250 260 280 260 360 Z" fill="url(#rim)" />
-      <path d="M150 250 L120 360 L150 320 L180 360 Z" fill="#0a0a0d" />
-      <path d="M150 256 L138 300 L150 312 L162 300 Z" fill="#161620" />
-      <path d="M150 268 L144 312 L150 326 L156 312 Z" fill="#c9a96a" opacity="0.7" />
-      <rect x="134" y="214" width="32" height="44" rx="12" fill="#0c0c11" />
-      <ellipse cx="150" cy="178" rx="46" ry="52" fill="url(#rim)" />
-      <path d="M104 150 Q150 116 196 150 L196 158 Q150 140 104 158 Z" fill="#0a0a0d" />
-      <rect x="98" y="156" width="104" height="14" rx="6" fill="#08080b" />
-      <rect x="116" y="148" width="68" height="10" rx="4" fill="#161620" />
-      <rect x="138" y="150" width="24" height="7" rx="3" fill="#c9a96a" opacity="0.65" />
-    </svg>
-  );
-}
-
 /* ============================== APP ===================================== */
 export default function LuxuryTransportSite() {
   const [revealed, setRevealed] = useState(false);
@@ -358,13 +334,10 @@ export default function LuxuryTransportSite() {
         <div className="nz-halo" />
         <div className="nz-stage">
           <div className="nz-fig" style={{ transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)` }}>
-            <Chauffeur />
+            <Emblem src={BRAND_EMBLEM} size="clamp(200px,34vw,320px)" />
           </div>
         </div>
         <div className="nz-introbrand">{CONFIG.tagline.toUpperCase()}</div>
-        <div className="nz-introtitle">
-          <Logo variant="wordmark" hero size="clamp(40px,8.5vw,84px)" />
-        </div>
         <div className="nz-introsub">Your Driver Awaits</div>
         <div className="nz-loadwrap">
           <div className="nz-loadbar">
@@ -382,7 +355,7 @@ export default function LuxuryTransportSite() {
         {/* NAV */}
         <nav className="nz-nav rv" style={{ animationDelay: '.05s' }}>
           <div className="nz-logo">
-            <Logo variant="monogram" size={40} />
+            <Emblem src={BRAND_EMBLEM} size={44} badge />
             <span className="nz-word">
               The <b>Chauffeurs</b>
             </span>
